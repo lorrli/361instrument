@@ -9,12 +9,18 @@ const int dChannel = 2;
 const int eChannel = 3;
 const int fChannel = 4;
 const int gChannel = 5;
+const int aChannel = 6;
+const int bChannel = 7;
+const int highCChannel = 8;
 
 const int c = 60;
 const int d = 62;
 const int e = 64;
 const int f = 65;
 const int g = 67;
+const int a = 69;
+const int b = 71;
+const int highc = 72;
 int velocity = 99;
 int increment = 100;
 
@@ -42,6 +48,9 @@ void loop() {
     usbMIDI.sendNoteOff(e, velocity, eChannel);
     usbMIDI.sendNoteOff(f, velocity, fChannel);
     usbMIDI.sendNoteOff(g, velocity, gChannel);
+    usbMIDI.sendNoteOff(a, velocity, aChannel);
+    usbMIDI.sendNoteOff(b, velocity, bChannel);
+    usbMIDI.sendNoteOff(highc, velocity, highCChannel);
   }
   else if (RawVal1 > 0 & RawVal1 < increment) {
     usbMIDI.sendNoteOn(c, velocity, cChannel);
@@ -49,6 +58,9 @@ void loop() {
     usbMIDI.sendNoteOff(e, velocity, eChannel);
     usbMIDI.sendNoteOff(f, velocity, fChannel);
     usbMIDI.sendNoteOff(g, velocity, gChannel);
+    usbMIDI.sendNoteOff(a, velocity, aChannel);
+    usbMIDI.sendNoteOff(b, velocity, bChannel);
+    usbMIDI.sendNoteOff(highc, velocity, highCChannel);
   }
   else if (RawVal1 > increment & RawVal1 < increment * 2) {
     usbMIDI.sendNoteOn(d, velocity, dChannel);
@@ -56,6 +68,9 @@ void loop() {
     usbMIDI.sendNoteOff(e, velocity, eChannel);
     usbMIDI.sendNoteOff(f, velocity, fChannel);
     usbMIDI.sendNoteOff(g, velocity, gChannel);
+    usbMIDI.sendNoteOff(a, velocity, aChannel);
+    usbMIDI.sendNoteOff(b, velocity, bChannel);
+    usbMIDI.sendNoteOff(highc, velocity, highCChannel);
   }
   else if (RawVal1 > increment * 2 & RawVal1 < increment * 4) {
     usbMIDI.sendNoteOn(e, velocity, eChannel);
@@ -63,6 +78,9 @@ void loop() {
     usbMIDI.sendNoteOff(c, velocity, cChannel);
     usbMIDI.sendNoteOff(f, velocity, fChannel);
     usbMIDI.sendNoteOff(g, velocity, gChannel);
+    usbMIDI.sendNoteOff(a, velocity, aChannel);
+    usbMIDI.sendNoteOff(b, velocity, bChannel);
+    usbMIDI.sendNoteOff(highc, velocity, highCChannel);
   }
   else if (RawVal1 > increment * 6 & RawVal1 < increment * 8) {
     usbMIDI.sendNoteOn(f, velocity, fChannel);
@@ -70,6 +88,9 @@ void loop() {
     usbMIDI.sendNoteOff(e, velocity, dChannel);
     usbMIDI.sendNoteOff(c, velocity, cChannel);
     usbMIDI.sendNoteOff(g, velocity, gChannel);
+    usbMIDI.sendNoteOff(a, velocity, aChannel);
+    usbMIDI.sendNoteOff(b, velocity, bChannel);
+    usbMIDI.sendNoteOff(highc, velocity, highCChannel);
   }
   else if (RawVal1 > increment * 8 & RawVal1 < increment * 10) {
     usbMIDI.sendNoteOn(g, velocity, gChannel);
@@ -77,9 +98,42 @@ void loop() {
     usbMIDI.sendNoteOff(e, velocity, eChannel);
     usbMIDI.sendNoteOff(f, velocity, fChannel);
     usbMIDI.sendNoteOff(c, velocity, cChannel);
+    usbMIDI.sendNoteOff(a, velocity, aChannel);
+    usbMIDI.sendNoteOff(b, velocity, bChannel);
+    usbMIDI.sendNoteOff(highc, velocity, highCChannel);
+  }
+  else if (RawVal1 > increment * 10 & RawVal1 < increment * 12) {
+    usbMIDI.sendNoteOff(g, velocity, gChannel);
+    usbMIDI.sendNoteOff(d, velocity, dChannel);
+    usbMIDI.sendNoteOff(e, velocity, eChannel);
+    usbMIDI.sendNoteOff(f, velocity, fChannel);
+    usbMIDI.sendNoteOff(c, velocity, cChannel);
+    usbMIDI.sendNoteOn(a, velocity, aChannel);
+    usbMIDI.sendNoteOff(b, velocity, bChannel);
+    usbMIDI.sendNoteOff(highc, velocity, highCChannel);
+  }
+  else if (RawVal1 > increment * 12 & RawVal1 < increment * 14) {
+    usbMIDI.sendNoteOff(g, velocity, gChannel);
+    usbMIDI.sendNoteOff(d, velocity, dChannel);
+    usbMIDI.sendNoteOff(e, velocity, eChannel);
+    usbMIDI.sendNoteOff(f, velocity, fChannel);
+    usbMIDI.sendNoteOff(c, velocity, cChannel);
+    usbMIDI.sendNoteOff(a, velocity, aChannel);
+    usbMIDI.sendNoteOn(b, velocity, bChannel);
+    usbMIDI.sendNoteOff(highc, velocity, highCChannel);
+  }
+  else if (RawVal1 > increment * 14 & RawVal1 < increment * 16) {
+    usbMIDI.sendNoteOff(g, velocity, gChannel);
+    usbMIDI.sendNoteOff(d, velocity, dChannel);
+    usbMIDI.sendNoteOff(e, velocity, eChannel);
+    usbMIDI.sendNoteOff(f, velocity, fChannel);
+    usbMIDI.sendNoteOff(c, velocity, cChannel);
+    usbMIDI.sendNoteOff(a, velocity, aChannel);
+    usbMIDI.sendNoteOff(b, velocity, bChannel);
+    usbMIDI.sendNoteOn(highc, velocity, highCChannel);
   }
   Serial.println();
-  delay(onDelay);
+//  delay(onDelay);
 
 
 
