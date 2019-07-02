@@ -1,16 +1,12 @@
+#include "MIDIUSB.h"
+
 const int sP1 = A15;
-int RawVal1 = 0, onDelay = 200;
+int RawVal1 = 0, onDelay = 50;
 float vVal1 = 0;
 float res1 = 0;
 
 const int channel = 1;
-const int dChannel = 2;
-const int eChannel = 3;
-const int fChannel = 4;
-const int gChannel = 5;
-const int aChannel = 6;
-const int bChannel = 7;
-const int highCChannel = 8;
+const int velocity = 99;
 
 int note = 0;
 int lastnote = 0;
@@ -23,7 +19,6 @@ const int g = 67;
 const int a = 69;
 const int b = 71;
 const int highc = 72;
-int velocity = 99;
 int increment = 100;
 int maxVal = increment * 9;
 
@@ -40,24 +35,15 @@ void loop() {
   Serial.println(RawVal1);
   Serial.print("lastnote = ");
   Serial.println(lastnote);
-  //  Serial.print("\t Voltage 1 = ");
-  //  Serial.println(vVal1);
-  //  Serial.print("\t Resistance 1 = ");
-  //  Serial.println(res1);
-    usbMIDI.sendNoteOff(c, velocity, channel);
-    usbMIDI.sendNoteOff(d, velocity, channel);
-    usbMIDI.sendNoteOff(e, velocity, channel);
-    usbMIDI.sendNoteOff(f, velocity, channel);
-    usbMIDI.sendNoteOff(g, velocity, channel);
-    usbMIDI.sendNoteOff(a, velocity, channel);
-    usbMIDI.sendNoteOff(b, velocity, channel);
-    usbMIDI.sendNoteOff(highc, velocity, channel);
 
+  //  midiEventPacket_t noteOff = {0x08, 0x80 | channel, note, velocity};
+  //  MidiUSB.sendMIDI(noteOff);
 
   if (RawVal1 > maxVal || RawVal1 < increment) {
     Serial.print("OFF");
     Serial.println();
-
+    usbMIDI.sendNoteOff(lastnote, velocity, channel);
+    usbMIDI.sendNoteOff(note, velocity, channel);
   }
   else if (RawVal1 > increment & RawVal1 < increment * 2) {
     note = c;
@@ -85,8 +71,12 @@ void loop() {
   }
 
   if (note != lastnote) {
-    usbMIDI.sendNoteOn(note, velocity, channel);
+    //    midiEventPacket_t noteOn = {0x09, 0x90 | channel, note, velocity};
+    //    MidiUSB.sendMIDI(noteOn);
+   usbMIDI.sendNoteOn(note, velocity, channel);
+   usbMIDI.sendNoteOff(lastnote, velocity, channel);
   }
+  
   lastnote = note;
   Serial.println();
   delay(onDelay);
