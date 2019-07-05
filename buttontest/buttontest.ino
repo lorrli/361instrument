@@ -20,22 +20,33 @@
   http://www.arduino.cc/en/Tutorial/Midi
 */
 const int sP1 = A15;
-const int butt1 = A9;
+const int butt1 = A9, butt2 = A8, butt3 = A7, butt4 = A6, butt5 = A3;
 int RawVal1 = 0, cycle = 200;
 const int C = 60;
 const int distance = 50;
 void setup() {
   // Set MIDI baud rate:
-  Serial1.begin(31250);
+  //Serial1.begin(31250);
   Serial1.begin(9600);
   //Serial1.begin(9600);
   pinMode(sP1, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
   pinMode(butt1, INPUT);
+  pinMode(butt2, INPUT);
+  pinMode(butt3, INPUT);
+  pinMode(butt4, INPUT);
+  pinMode(butt5, INPUT);
+
 }
 int lastnote = 0, note = 0, notestep = 0;
 int lastButt1State = 0, butt1State = 0;
+int lastButt2State = 0, butt2State = 0;
+int lastButt3State = 0, butt3State = 0;
+int lastButt4State = 0, butt4State = 0;
+int lastButt5State = 0, butt5State = 0;
+
+
 void loop() {
   RawVal1 = analogRead(sP1);
   notestep = (RawVal1 - distance)/distance;
@@ -45,7 +56,11 @@ void loop() {
   Serial.println(notestep);
   note = C + notestep -1; 
   butt1State = digitalRead(butt1);
-  
+  butt2State = digitalRead(butt2);
+  butt3State = digitalRead(butt3);
+  butt4State = digitalRead(butt4);
+  butt5State = digitalRead(butt5);
+
   if(butt1State == HIGH){
     //Serial.print("   Note: ");
     //Serial.println(note);
@@ -55,18 +70,58 @@ void loop() {
       Serial.println("Playing a note");
     }
   }
+  if(butt2State == HIGH){
+    //Serial.print("   Note: ");
+    //Serial.println(note);
+    //usbMIDI.sendNoteOn(note,99,1);
+    if(notestep < 18 && notestep > 0 && lastButt2State != 1){
+      usbMIDI.sendNoteOn(note+4,99,1);
+      Serial.println("Playing a note");
+    }
+  }
+  if(butt3State == HIGH){
+    //Serial.print("   Note: ");
+    //Serial.println(note);
+    //usbMIDI.sendNoteOn(note,99,1);
+    if(notestep < 18 && notestep > 0 && lastButt3State != 1){
+      usbMIDI.sendNoteOn(note+7,99,1);
+      Serial.println("Playing a note");
+    }
+  }
+  if(butt4State == HIGH){
+    //Serial.print("   Note: ");
+    //Serial.println(note);
+    //usbMIDI.sendNoteOn(note,99,1);
+    if(notestep < 18 && notestep > 0 && lastButt4State != 1){
+      usbMIDI.sendNoteOn(note+12,99,1);
+      Serial.println("Playing a note");
+    }
+  }
+  if(butt5State == HIGH){
+    //Serial.print("   Note: ");
+    //Serial.println(note);
+    //usbMIDI.sendNoteOn(note,99,1);
+    if(notestep < 18 && notestep > 0 && lastButt5State != 1){
+      usbMIDI.sendNoteOn(note+16,99,1);
+      Serial.println("Playing a note");
+    }
+  }
   //lastnote = note;
   lastButt1State = butt1State;
-  Serial.print("Last Button state:");
-  Serial.print(lastButt1State);
-  delay(cycle);
-}
+  lastButt2State = butt2State;
+  lastButt3State = butt3State;
+  lastButt4State = butt4State;
+  lastButt5State = butt5State;
 
-// plays a MIDI note. Doesn't check to see that cmd is greater than 127, or that
-// data values are less than 127:
-void noteOn(int cmd, int pitch, int velocity) {
-  Serial1.write(cmd);
-  Serial1.write(pitch);
-  Serial1.write(velocity);
-  
+  Serial.print("Last Button1 state:");
+  Serial.println(lastButt1State);
+  Serial.print("Last Button2 state:");
+  Serial.println(lastButt2State);
+  Serial.print("Last Button3 state:");
+  Serial.println(lastButt3State);
+  Serial.print("Last Button4 state:");
+  Serial.println(lastButt4State);
+  Serial.print("Last Button5 state:");
+  Serial.println(lastButt5State);
+  delay(cycle);
 }
