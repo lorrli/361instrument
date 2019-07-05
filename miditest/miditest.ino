@@ -19,28 +19,52 @@
 
   http://www.arduino.cc/en/Tutorial/Midi
 */
-
+const int sP1 = A15;
+int RawVal1 = 0, cycle = 200;
+const int C = 60;
+const int distance = 50;
 void setup() {
   // Set MIDI baud rate:
-  Serial.begin(31250);
-}
+  Serial1.begin(31250);
+  Serial1.begin(9600);
+  //Serial1.begin(9600);
+  pinMode(sP1, INPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
 
+}
+int lastnote = 0, note = 0, notestep = 0;
 void loop() {
-  // play notes from F#-0 (0x1E) to F#-5 (0x5A):
-  for (int note = 0x1E; note < 0x5A; note ++) {
-    //Note on channel 1 (0x90), some note value (note), middle velocity (0x45):
-    noteOn(0x90, note, 0x45);
-    delay(100);
-    //Note on channel 1 (0x90), some note value (note), silent velocity (0x00):
-    noteOn(0x90, note, 0x00);
-    delay(100);
+  RawVal1 = analogRead(sP1);
+  notestep = (RawVal1 - distance)/distance;
+  Serial.print("Reading: ");
+  Serial.print(RawVal1);
+  Serial.print("notestep:: ");
+  Serial.println(notestep);
+      note = C + notestep -1; 
+
+  if(notestep < 18 && notestep > 0){
+   
+
+
+    Serial.print("   Note: ");
+    Serial.println(note);
+    usbMIDI.sendNoteOn(note,99,1);
+    
   }
+  //delay(cycle);
+  if (note != lastnote){
+        usbMIDI.sendNoteOff(lastnote,0,1);
+  }
+  lastnote = note;
+  delay(200);
 }
 
 // plays a MIDI note. Doesn't check to see that cmd is greater than 127, or that
 // data values are less than 127:
 void noteOn(int cmd, int pitch, int velocity) {
-  Serial.write(cmd);
-  Serial.write(pitch);
-  Serial.write(velocity);
+  Serial1.write(cmd);
+  Serial1.write(pitch);
+  Serial1.write(velocity);
+  
 }
