@@ -49,13 +49,17 @@ void loop() {
 
     Serial.print("   Note: ");
     Serial.println(note);
-    usbMIDI.sendNoteOn(note,99,1);
-    
+    //usbMIDI.sendNoteOn(note,99,1);
+    if(note != lastnote){
+        usbMIDI.sendNoteOn(note,99,1);
+
+    }
   }
   //delay(cycle);
-  if (note != lastnote){
-        usbMIDI.sendNoteOff(lastnote,0,1);
-  }
+//  if (note != lastnote){
+//
+//        //usbMIDI.sendNoteOff(lastnote,0,1);
+//  }
   lastnote = note;
   delay(200);
 }
