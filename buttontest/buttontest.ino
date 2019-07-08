@@ -19,9 +19,13 @@
 
   http://www.arduino.cc/en/Tutorial/Midi
 */
+
+
+const int linPot = A16; // Change this value to prototype: Slide = A14 , Rotate = A16
 const int sP1 = A15;
+int volumeVal = 0;
 const int butt1 = A9, butt2 = A8, butt3 = A7, butt4 = A6, butt5 = A3;
-int RawVal1 = 0, cycle = 200;
+int RawVal1 = 0, cycle = 50;
 const int C = 60;
 const int distance = 50;
 void setup() {
@@ -29,6 +33,7 @@ void setup() {
   //Serial1.begin(31250);
   Serial1.begin(9600);
   //Serial1.begin(9600);
+  pinMode(linPot, INPUT);
   pinMode(sP1, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -50,10 +55,13 @@ int lastButt5State = 0, butt5State = 0;
 void loop() {
   RawVal1 = analogRead(sP1);
   notestep = (RawVal1 - distance)/distance;
+  volumeVal = analogRead(linPot) / 8;
   Serial.print(" Linpot: ");
   Serial.print(RawVal1);
   Serial.print(" notestep:: ");
   Serial.println(notestep);
+  Serial.print(" volume:: ");
+  Serial.println(volumeVal);
   note = C + notestep -1; 
   butt1State = digitalRead(butt1);
   butt2State = digitalRead(butt2);
@@ -66,7 +74,7 @@ void loop() {
     //Serial.println(note);
     //usbMIDI.sendNoteOn(note,99,1);
     if(notestep < 18 && notestep > 0 && lastButt1State != 1){
-      usbMIDI.sendNoteOn(note,99,1);
+      usbMIDI.sendNoteOn(note,volumeVal,1);
       Serial.println("Playing a note");
     }
   }
@@ -75,7 +83,7 @@ void loop() {
     //Serial.println(note);
     //usbMIDI.sendNoteOn(note,99,1);
     if(notestep < 18 && notestep > 0 && lastButt2State != 1){
-      usbMIDI.sendNoteOn(note+4,99,1);
+      usbMIDI.sendNoteOn(note+4,volumeVal,1);
       Serial.println("Playing a note");
     }
   }
@@ -84,7 +92,7 @@ void loop() {
     //Serial.println(note);
     //usbMIDI.sendNoteOn(note,99,1);
     if(notestep < 18 && notestep > 0 && lastButt3State != 1){
-      usbMIDI.sendNoteOn(note+7,99,1);
+      usbMIDI.sendNoteOn(note+7,volumeVal,1);
       Serial.println("Playing a note");
     }
   }
@@ -93,7 +101,7 @@ void loop() {
     //Serial.println(note);
     //usbMIDI.sendNoteOn(note,99,1);
     if(notestep < 18 && notestep > 0 && lastButt4State != 1){
-      usbMIDI.sendNoteOn(note+12,99,1);
+      usbMIDI.sendNoteOn(note+12,volumeVal,1);
       Serial.println("Playing a note");
     }
   }
@@ -102,7 +110,7 @@ void loop() {
     //Serial.println(note);
     //usbMIDI.sendNoteOn(note,99,1);
     if(notestep < 18 && notestep > 0 && lastButt5State != 1){
-      usbMIDI.sendNoteOn(note+16,99,1);
+      usbMIDI.sendNoteOn(note+16,volumeVal,1);
       Serial.println("Playing a note");
     }
   }

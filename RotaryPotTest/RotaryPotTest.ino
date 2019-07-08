@@ -1,4 +1,4 @@
-const int sP1 = A0;
+const int sP1 = A14;
 int RawVal1 = 0, onDelay = 50;
 float vVal1 = 0;
 float res1 = 0;
