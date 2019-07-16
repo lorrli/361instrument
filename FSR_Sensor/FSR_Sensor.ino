@@ -18,8 +18,8 @@ const int FSR_PIN = A14; // Pin connected to FSR/resistor divider
 
 // Measure the voltage at 5V and resistance of your 3.3k resistor, and enter
 // their value's below:
-const float VCC = 5.09; // Measured voltage of Ardunio 5V line
-const float R_DIV = 3240.0; // Measured resistance of 3.3k resistor
+const float VCC = 3.3; // Measured voltage of Ardunio 5V line
+const float R_DIV = 4700.0; // Measured resistance of 3.3k resistor
 
 void setup() 
 {
