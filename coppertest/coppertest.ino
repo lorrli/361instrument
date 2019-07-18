@@ -208,7 +208,7 @@ void getNote(){
   if (RawVal1 >=200 && RawVal1 <=800){
 //    notestep = (RawVal1 - 100)/distance;
 //    currNote = openNote + notestep;
-    currNote = constrain(map(RawVal1, 200, 800, 61, 80),61,80);
+    currNote = constrain(map(RawVal1, 200, 800, 49, 80),49,80);
   }else{
     currNote = openNote;
   }
