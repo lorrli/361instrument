@@ -78,9 +78,12 @@ int CCpot = 90; // Send CC values from the potentiometer on CC channel 90
 int CCcap = 91; // Send CC values from the capacitor on CC channel 91
 //
 ////////our stuff
-const int linPot = A16; // Change this value to prototype: Slide = A14 , Rotate = A16
+const int VolumePin = A16;
 const int sP1 = A15;
 const int openNote = 48;
+int velocity[] = {50, 90, 127}; // three volume ranges 
+int volumeIndex = 0;
+int SensorReading = 0; 
 int currNote = openNote;
 const int distance = 50;
 int RawVal1, notestep = 0;
@@ -95,7 +98,7 @@ void setup() {
     Serial.println("MPR121 not found, check wiring?");
     while (1);
   }
-  pinMode(linPot, INPUT);
+  pinMode(VolumePin, INPUT);
   pinMode(sP1, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -143,7 +146,7 @@ void checkCap(){
      
         // Send out a MIDI message on both usbMIDI and hardware MIDI ports
         
-        usbMIDI.sendNoteOn(currNote + intervals[n-1],vel,channel);
+        usbMIDI.sendNoteOn(currNote + intervals[n-1],velocity[volumeIndex],channel);
         Serial.print("playing:"); 
         Serial.println(currNote);
         //usbMIDI.sendNoteOn(C+4,vel,channel); 
@@ -197,6 +200,10 @@ void checkCCcap(){
 void getNote(){
   //read linear pot for note value
   RawVal1 = analogRead(sP1);
+  SensorReading = analogRead(VolumePin); 
+  volumeIndex = map(SensorReading, 0, 900, 0, 2);
+  Serial.print("Volume: ");
+  Serial.println(volumeIndex);
   Serial.println(RawVal1);
   if (RawVal1 >=200 && RawVal1 <=800){
 //    notestep = (RawVal1 - 100)/distance;
