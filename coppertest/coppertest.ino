@@ -80,10 +80,12 @@ int CCcap = 91; // Send CC values from the capacitor on CC channel 91
 ////////our stuff
 const int linPot = A16; // Change this value to prototype: Slide = A14 , Rotate = A16
 const int sP1 = A15;
-const int C = 60;
+const int openNote = 48;
+int currNote = openNote;
 const int distance = 50;
 int RawVal1, notestep = 0;
-
+const int cycle=50;
+const int intervals[]={0,4,7,12,16,19};
 // Setup loop that intitiates the I2C hardware and the hardware MIDI
 void setup() {
   Serial.begin(9600);
@@ -97,17 +99,16 @@ void setup() {
   pinMode(sP1, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
+  
 }
 
 // the main loop
 void loop() {
-  //read linear pot for note value
-  RawVal1 = analogRead(sP1);
-  notestep = (RawVal1 - distance)/distance;
   //Serial.println(notestep);
   // Get the currently touched pads
   currstateA = capA.touched();
   Serial.println(currstateA);
+  getNote();
   // Check the state of the cap-touch board and turn on/off notes as needed
   checkCap();
 
@@ -121,7 +122,6 @@ void loop() {
     ///////checkCCcap();
 
     //timer = 0;
-    delay(50);
   //}
   
   // Update our state
@@ -143,21 +143,32 @@ void checkCap(){
      
         // Send out a MIDI message on both usbMIDI and hardware MIDI ports
         
-        usbMIDI.sendNoteOn(notesA[n],vel,channel); 
+        usbMIDI.sendNoteOn(currNote + intervals[n-1],vel,channel);
+        Serial.print("playing:"); 
+        Serial.println(currNote);
         //usbMIDI.sendNoteOn(C+4,vel,channel); 
 
       // otherwise it must have changed and is FALSE, so turn off that note
-      
-    }else{
-              usbMIDI.sendNoteOff(notesA[n],0,channel); 
-
-      
     }
+    
+//    else{
+//              usbMIDI.sendNoteOff(currNote + n*4,0,channel); 
+//
+//      
+//    }
     
 //      usbMIDI.sendNoteOff(C,0,channel);
 //      usbMIDI.sendNoteOff(C+4,0,channel);
 //      usbMIDI.sendNoteOff(C+8,0,channel);
     }
+    delay(cycle);
+    usbMIDI.sendNoteOff(currNote,0,channel); 
+    usbMIDI.sendNoteOff(currNote + 4,0,channel); 
+    usbMIDI.sendNoteOff(currNote + 7,0,channel); 
+    usbMIDI.sendNoteOff(currNote + 12,0,channel); 
+    usbMIDI.sendNoteOff(currNote + 16,0,channel); 
+    usbMIDI.sendNoteOff(currNote + 19,0,channel); 
+
   
 }
 
@@ -183,8 +194,18 @@ void checkCCcap(){
   prevcap = currcap;
 }
 
-void currNote(){
-  
+void getNote(){
+  //read linear pot for note value
+  RawVal1 = analogRead(sP1);
+  Serial.println(RawVal1);
+  if (RawVal1 >=200 && RawVal1 <=800){
+//    notestep = (RawVal1 - 100)/distance;
+//    currNote = openNote + notestep;
+    currNote = constrain(map(RawVal1, 200, 800, 61, 80),61,80);
+  }else{
+    currNote = openNote;
+  }
+  Serial.print(currNote);
 }
 /*********************************************************
 This is a library for the MPR121 12-channel Capacitive touch sensor
