@@ -59,6 +59,7 @@ int channel = 1;
 // These correspond to pins:
               // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11
 int notesA[] = { 0, 55, 57,59,62,66,76, 0,0, 0, 0, 0};
+//int notesA[] = { 0, 36,48,52,55,60, 64, 0,0, 0, 0, 0}; //this is the mapping for a C chord
 
 // Some common scale intervals
 //dorian       = "2,1,2,2,2,1,2"
