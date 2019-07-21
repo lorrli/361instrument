@@ -115,20 +115,6 @@ void loop() {
   getNote();
   // Check the state of the cap-touch board and turn on/off notes as needed
   checkCap();
-
-  // Only check the control changes 20 times a second so we dont overload
-  // the MIDI-bus with too many messages
-  //if(timer > 50){
-    // Check Pot
-    ///////checkCCpot();
-
-    // Check Cap
-    ///////checkCCcap();
-
-    //timer = 0;
-  //}
-  
-  // Update our state
   prevstateA = currstateA;
 }
 
@@ -150,22 +136,11 @@ void checkCap(){
         usbMIDI.sendNoteOn(currNote + intervals[n-1],velocity[volumeIndex],channel);
         Serial.print("playing:"); 
         Serial.println(currNote);
-        //usbMIDI.sendNoteOn(C+4,vel,channel); 
 
-      // otherwise it must have changed and is FALSE, so turn off that note
     }
-    
-//    else{
-//              usbMIDI.sendNoteOff(currNote + n*4,0,channel); 
-//
-//      
-//    }
-    
-//      usbMIDI.sendNoteOff(C,0,channel);
-//      usbMIDI.sendNoteOff(C+4,0,channel);
-//      usbMIDI.sendNoteOff(C+8,0,channel);
-    }
+  }
     delay(cycle);
+  
     usbMIDI.sendNoteOff(currNote,0,channel); 
     usbMIDI.sendNoteOff(currNote + 4,0,channel); 
     usbMIDI.sendNoteOff(currNote + 7,0,channel); 
@@ -176,27 +151,6 @@ void checkCap(){
   
 }
 
-void checkCCpot() {
-  currPotValue = analogRead(pot1)/8; // Read the pin and divide by 8 to get a value from (0-127)
-  // Check if the Potentiometer value has changed, and send a new CC message if it has
-  Serial.print("checkccpot: ");
-  Serial.println(currPotValue);
-  if(currPotValue != prevPotValue){
-    usbMIDI.sendControlChange(CCpot,currPotValue,channel);
-  }
-  prevPotValue = currPotValue; // Update the prevPotValue for the next loop
-}
-
-void checkCCcap(){
-  currcap = constrain(map(capA.filteredData(0), 40, 130, 120, 30), 30, 120);
-  Serial.print("checkcccap: ");
-  Serial.println(currcap);
-//  Serial.println(capA.filteredData(0));
-  if(currcap != prevcap){
-    usbMIDI.sendControlChange(CCcap,currcap,channel);
-  }
-  prevcap = currcap;
-}
 
 void getNote(){
   //read linear pot for note value
