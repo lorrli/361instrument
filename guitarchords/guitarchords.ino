@@ -55,7 +55,7 @@ const int VolumePin = A16;
 const int sP1 = A15;
 const int openNote = 0;
 int velocity[] = {50, 90, 127}; // three volume ranges 
-int volumeIndex = 2;
+int volumeIndex = 0;
 int SensorReading = 0; 
 int currNote = openNote;
 const int distance = 50;
@@ -159,9 +159,9 @@ void getNote(){
   //read linear pot for note value
   RawVal1 = analogRead(sP1);
   SensorReading = analogRead(VolumePin); 
-  //volumeIndex = map(SensorReading, 0, 900, 0, 2);
-  //Serial.print("Volume: ");
-  //Serial.println(volumeIndex);
+  volumeIndex = map(SensorReading, 0, 900, 0, 2);
+  Serial.print("Volume: ");
+  Serial.println(volumeIndex);
   Serial.println(RawVal1);
   if (RawVal1 >=200 && RawVal1 <=800){
 //    notestep = (RawVal1 - 100)/distance;
