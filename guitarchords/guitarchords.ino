@@ -55,7 +55,7 @@ const int VolumePin = A16;
 const int sP1 = A15;
 const int openNote = 0;
 int velocity[] = {50, 90, 127}; // three volume ranges 
-int volumeIndex = 0;
+int volumeIndex = 2;
 int SensorReading = 0; 
 int currNote = openNote;
 const int distance = 50;
@@ -63,10 +63,10 @@ int RawVal1, notestep = 0;
 const int cycle=50;
 const int intervals[]={0,4,7,12,16,19};
 /////////chord note stuff
-int chordType = 0;
+int chordType = 1;
 int chords[][12][6] = 
                //major
-               {{{36,48,52,55,60, 64},
+               {{{40,48,52,55,60, 64},
                {41,49,53,56,61,65},
                {45,50,57,62,66,69},
                {46,51,58,63,67,70},
@@ -134,9 +134,9 @@ void checkCap(){
      
         // Send out a MIDI message on both usbMIDI and hardware MIDI ports
         //chords[0-major,1-minor][base chord note][stringpressed]
-        usbMIDI.sendNoteOn(chords[chordType][currNote][n-1],velocity[volumeIndex],channel);
+        usbMIDI.sendNoteOn(chords[chordType][11 - currNote][n-1],velocity[volumeIndex],channel);
         Serial.print("playing:"); 
-        Serial.println(currNote);
+        Serial.println(chords[chordType][11 - currNote][n-1]);
 
     }
   }
@@ -150,7 +150,7 @@ void checkCap(){
      
         // Send out a MIDI message on both usbMIDI and hardware MIDI ports
         //chords[0-major,1-minor][base chord note][stringpressed]
-        usbMIDI.sendNoteOff(chords[chordType][currNote][n-1],0,channel);
+        usbMIDI.sendNoteOff(chords[chordType][11 - currNote][n-1],0,channel);
   }
 }
 
@@ -159,9 +159,9 @@ void getNote(){
   //read linear pot for note value
   RawVal1 = analogRead(sP1);
   SensorReading = analogRead(VolumePin); 
-  volumeIndex = map(SensorReading, 0, 900, 0, 2);
-  Serial.print("Volume: ");
-  Serial.println(volumeIndex);
+  //volumeIndex = map(SensorReading, 0, 900, 0, 2);
+  //Serial.print("Volume: ");
+  //Serial.println(volumeIndex);
   Serial.println(RawVal1);
   if (RawVal1 >=200 && RawVal1 <=800){
 //    notestep = (RawVal1 - 100)/distance;
