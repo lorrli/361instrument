@@ -69,8 +69,6 @@ int muteReading = 0;
 const int MUTE_THRESHOLD = 200;
 
 
-
-
 /////////chord note stuff
 int chordType = 0;
 int chords[][12][6] =
@@ -128,7 +126,7 @@ void loop() {
   if(analogRead(MUTE_PIN) < MUTE_THRESHOLD){
     usbMIDI.sendControlChange(7,0,channel);
   }else{
-    usbMIDI.sendControlChange(7,127,channel);
+    usbMIDI.sendControlChange(7,noteVolume,channel);
     getNote();
   // Check the state of the cap-touch board and turn on/off notes as needed
     checkCap();
