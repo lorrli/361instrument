@@ -58,6 +58,7 @@ const int openNote = 0;
 
 int velocity[] = {50, 90, 127}; // three volume ranges
 int volumeIndex = 0;
+int noteVolume = 0;
 int SensorReading = 0;
 int currNote = openNote;
 const int distance = 50;
@@ -150,7 +151,7 @@ void checkCap() {
 
       // Send out a MIDI message on both usbMIDI and hardware MIDI ports
       //chords[0-major,1-minor][base chord note][stringpressed]
-      usbMIDI.sendNoteOn(chords[chordType][currNote][n - 1], velocity[volumeIndex], channel);
+      usbMIDI.sendNoteOn(chords[chordType][currNote][n - 1], noteVolume, channel);
       Serial.print("playing:");
       Serial.println(chords[chordType][currNote][n - 1]);
 
@@ -175,7 +176,8 @@ void getNote() {
   //read linear pot for note value
   fretReading = analogRead(sP1);
   SensorReading = analogRead(VolumePin);
-  volumeIndex = map(SensorReading, 0, 1024, 0, 2);
+  //volumeIndex = map(SensorReading, 0, 1024, 0, 2);
+  noteVolume = map(SensorReading, 0, 1024, 30, 127);
   Serial.print("Volume: ");
   Serial.println(volumeIndex);
   Serial.println(fretReading);
