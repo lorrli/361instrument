@@ -53,15 +53,23 @@ int vel = 120;
 ////////our stuff
 const int VolumePin = A16;
 const int sP1 = A15;
+const int MUTE_PIN = A17;
 const int openNote = 0;
+
 int velocity[] = {50, 90, 127}; // three volume ranges
 int volumeIndex = 0;
 int SensorReading = 0;
 int currNote = openNote;
 const int distance = 50;
-int RawVal1, notestep = 0;
+int fretReading, notestep = 0;
 const int cycle = 50;
 const int intervals[] = {0, 4, 7, 12, 16, 19};
+int muteReading = 0;
+const int MUTE_THRESHOLD = 200;
+
+
+
+
 /////////chord note stuff
 int chordType = 0;
 int chords[][12][6] =
@@ -104,21 +112,27 @@ void setup() {
   }
   pinMode(VolumePin, INPUT);
   pinMode(sP1, INPUT);
+  pinMode(MUTE_PIN, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
-
 }
 
 // the main loop
 void loop() {
+
   //Serial.println(notestep);
   // Get the currently touched pads
   currstateA = capA.touched();
   Serial.println(currstateA);
-  getNote();
+  if(analogRead(MUTE_PIN) < MUTE_THRESHOLD){
+    usbMIDI.sendControlChange(7,0,channel);
+  }else{
+    usbMIDI.sendControlChange(7,127,channel);
+    getNote();
   // Check the state of the cap-touch board and turn on/off notes as needed
-  checkCap();
-  prevstateA = currstateA;
+    checkCap();
+    prevstateA = currstateA;
+  }
 }
 
 // Function to check the cap-touch board and send turn on/off notes as needed
@@ -159,16 +173,16 @@ void checkCap() {
 
 void getNote() {
   //read linear pot for note value
-  RawVal1 = analogRead(sP1);
+  fretReading = analogRead(sP1);
   SensorReading = analogRead(VolumePin);
-  volumeIndex = map(SensorReading, 0, 900, 0, 2);
+  volumeIndex = map(SensorReading, 0, 1024, 0, 2);
   Serial.print("Volume: ");
   Serial.println(volumeIndex);
-  Serial.println(RawVal1);
-  if (RawVal1 >= 200 && RawVal1 <= 800) {
+  Serial.println(fretReading);
+  if (fretReading >= 200 && fretReading <= 800) {
     //    notestep = (RawVal1 - 100)/distance;
     //    currNote = openNote + notestep;
-    currNote = constrain(map(RawVal1, 200, 800, 1, 11), 1, 11);
+    currNote = constrain(map(fretReading, 200, 800, 1, 11), 1, 11);
   } else {
     currNote = openNote;
   }
