@@ -177,7 +177,7 @@ void getNote() {
   //volumeIndex = map(SensorReading, 0, 1024, 0, 2);
   noteVolume = map(SensorReading, 0, 1024, 30, 127);
   Serial.print("Volume: ");
-  Serial.println(volumeIndex);
+  Serial.println(noteVolume);
   Serial.println(fretReading);
   if (fretReading >= 200 && fretReading <= 800) {
     //    notestep = (RawVal1 - 100)/distance;
