@@ -53,7 +53,8 @@ int vel = 120;
 ////////our stuff
 const int VolumePin = A16;
 const int sP1 = A15;
-const int MUTE_PIN = A17;
+const int MUTE_PIN = A13;
+const int MODE_SWITCH = A12;
 const int openNote = 0;
 
 int velocity[] = {50, 90, 127}; // three volume ranges
@@ -114,17 +115,26 @@ void setup() {
   pinMode(MUTE_PIN, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
+  pinMode(MODE_SWITCH, INPUT_PULLUP);
 }
 
 // the main loop
 void loop() {
+  if (analogRead(MODE_SWITCH) == HIGH){
+    Serial.println("minor");
+    chordType = 1;
+  }else{
+        Serial.println("major");
 
+    chordType = 0;
+  }
   //Serial.println(notestep);
   // Get the currently touched pads
   currstateA = capA.touched();
   Serial.println(currstateA);
-  if(analogRead(MUTE_PIN) < MUTE_THRESHOLD){
+  if(analogRead(MUTE_PIN) > MUTE_THRESHOLD){
     usbMIDI.sendControlChange(7,0,channel);
+    delay(100);
   }else{
     usbMIDI.sendControlChange(7,noteVolume,channel);
     getNote();
