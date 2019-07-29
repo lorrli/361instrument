@@ -51,29 +51,35 @@ int channel = 1;
 int vel = 120;
 
 ////////our stuff
+//defined pin for volume control input (slider)
 const int VolumePin = A16;
+//defined pin for pitch control input (linear potentiometer)
 const int sP1 = A15;
+//defined pin for mute control input (force sensitive resistor)
 const int MUTE_PIN = A13;
+//defined pin for chord type switch input (two state switch)
 const int MODE_SWITCH = A12;
+//base note step (no change)
 const int openNote = 0;
-
-int velocity[] = {50, 90, 127}; // three volume ranges
-int volumeIndex = 0;
+//set note volume (called when sending note on)
 int noteVolume = 0;
-int SensorReading = 0;
+//current note to be played
 int currNote = openNote;
 const int distance = 50;
+//reading on linear pot and number of notes above the base note 
 int fretReading, notestep = 0;
+//delay on system cycles
 const int cycle = 50;
-const int intervals[] = {0, 4, 7, 12, 16, 19};
+//reading from mute fsr
 int muteReading = 0;
+//threshold on force sensor before mute takes into affect
 const int MUTE_THRESHOLD = 200;
 
 
 /////////chord note stuff
+//major=0, minor=1
 int chordType = 0;
 int chords[][12][6] =
-  //major
 { //major
                 {{48,48,52,55,60, 64},
                 {41,49,53,56,61,65},
@@ -110,6 +116,7 @@ void setup() {
     Serial.println("MPR121 not found, check wiring?");
     while (1);
   }
+  //initiate our pins for sensors
   pinMode(VolumePin, INPUT);
   pinMode(sP1, INPUT);
   pinMode(MUTE_PIN, INPUT);
@@ -120,25 +127,29 @@ void setup() {
 
 // the main loop
 void loop() {
+  //set the chord type to its respective setting
   if (analogRead(MODE_SWITCH) == HIGH){
     Serial.println("minor");
     chordType = 1;
   }else{
-        Serial.println("major");
-
+    Serial.println("major");
     chordType = 0;
   }
-  //Serial.println(notestep);
   // Get the currently touched pads
   currstateA = capA.touched();
   Serial.println(currstateA);
+  //check if mute is in effect, otherwise look to play notes
   if(analogRead(MUTE_PIN) > MUTE_THRESHOLD){
+    //mute audio channel
     usbMIDI.sendControlChange(7,0,channel);
+    //additional delay to disregard any noise from input
     delay(100);
   }else{
+    //set channel volume back to previous volume setting
     usbMIDI.sendControlChange(7,noteVolume,channel);
+    //read the note from fret board
     getNote();
-  // Check the state of the cap-touch board and turn on/off notes as needed
+    //Check the state of the cap-touch board and turn on/off notes as needed
     checkCap();
     prevstateA = currstateA;
   }
@@ -161,6 +172,7 @@ void checkCap() {
       //chords[0-major,1-minor][base chord note][stringpressed]
       usbMIDI.sendNoteOn(chords[chordType][currNote][n - 1], noteVolume, channel);
       Serial.print("playing:");
+      //play respective note
       Serial.println(chords[chordType][currNote][n - 1]);
 
     }
@@ -175,23 +187,24 @@ void checkCap() {
 
     // Send out a MIDI message on both usbMIDI and hardware MIDI ports
     //chords[0-major,1-minor][base chord note][stringpressed]
+    //turn off possible notes played (prevents MIDI backlog issues later on)
     usbMIDI.sendNoteOff(chords[chordType][currNote][n - 1], 0, channel);
   }
 }
 
-
+//convert linear potentiometer reading to a addressable note
 void getNote() {
   //read linear pot for note value
   fretReading = analogRead(sP1);
+  //read volume slider
   SensorReading = analogRead(VolumePin);
-  //volumeIndex = map(SensorReading, 0, 1024, 0, 2);
+  //map volume reading to value in range (lower bound is slightly audible 30)
   noteVolume = map(SensorReading, 0, 1024, 30, 127);
   Serial.print("Volume: ");
   Serial.println(noteVolume);
   Serial.println(fretReading);
+  //map the readings to our note address range
   if (fretReading >= 200 && fretReading <= 800) {
-    //    notestep = (RawVal1 - 100)/distance;
-    //    currNote = openNote + notestep;
     currNote = constrain(map(fretReading, 200, 800, 1, 11), 1, 11);
   } else {
     currNote = openNote;
